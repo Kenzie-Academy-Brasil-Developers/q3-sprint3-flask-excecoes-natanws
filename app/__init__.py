@@ -16,7 +16,8 @@ def get_user():
             return jsonify({"data": data}), HTTPStatus.OK
             
     else:
-        os.makedirs(DATABASE_DIRECTORY)
+        if not os.path.exists(f'{DATABASE_DIRECTORY}'):
+           os.makedirs(DATABASE_DIRECTORY)
         with open(os.path.join(DATABASE_DIRECTORY, 'database.json'), 'w') as db_file:
             dump([], db_file, indent = 4)
 
@@ -27,7 +28,7 @@ def new_user():
     try:
         new_user_data = request.get_json()
 
-        if type(new_user_data['name']) or type(new_user_data['email']) != str:
+        if type(new_user_data['name']) != str or type(new_user_data['email']) != str:
             raise WrongTypeError(new_user_data)
 
         name = new_user_data['name'].title()
